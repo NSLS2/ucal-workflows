@@ -8,6 +8,7 @@ prefect = "==3.4.6"
 prefect-docker = "*"
 tiled-client = "0.1.b*"
 databroker = "*"
+gcc = "*"  # mass in ucal-autoprocess requires this
 
 [pypi-dependencies]
 ucal-autoprocess = { git = "https://github.com/NSLS-II-SST/ucal-autoprocess.git" }
