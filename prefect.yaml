@@ -61,5 +61,6 @@ deployments:
         volumes:
           - /nsls2/data/sst/proposals:/nsls2/data/sst/proposals
           - /nsls2/software/etc/tiled:/nsls2/software/etc/tiled
+          - /nsls2/data/sst/legacy/ucal/process_info:/nsls2/data/sst/legacy/ucal/process_info
         container_create_kwargs:
           userns_mode: "keep-id:uid=402953,gid=402953"  # workflow-sst:workflow-sst
