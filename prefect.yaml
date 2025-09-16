@@ -17,8 +17,8 @@ pull:
   - prefect.deployments.steps.set_working_directory:
       directory: /repo
   - prefect.deployments.steps.git_clone:
-      repository: https://github.com/NSLS-II-SST/workflows-ucal.git
-      branch: prefect3-pixi-upgrade
+      repository: https://github.com/nsls2/ucal-workflows.git
+      branch: main
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
