@@ -13,7 +13,9 @@ def initialize_tiled_client(beamline_acronym):
 
 def get_proposal_path(run):
     proposal = run.start.get("proposal", {}).get("proposal_id", None)
-    is_commissioning = "commissioning" in run.start.get("proposal", {}).get("type", "").lower()
+    is_commissioning = (
+        "commissioning" in run.start.get("proposal", {}).get("type", "").lower()
+    )
     cycle = run.start.get("cycle", None)
     if proposal is None or cycle is None:
         raise ValueError("Proposal Metadata not Loaded")
@@ -56,7 +58,9 @@ def get_run_header(run):
     scaninfo["sample"] = run.start.get("sample_name", "")
     scaninfo["loadid"] = run.start.get("sample_id", "")
 
-    scaninfo["command"] = get_with_fallbacks(run.start, "command", "plan_name", default=None)
+    scaninfo["command"] = get_with_fallbacks(
+        run.start, "command", "plan_name", default=None
+    )
     scaninfo["motor"] = run.start.get("motors", ["time"])[0]
     scankeys = [
         "time",
@@ -69,20 +73,42 @@ def get_run_header(run):
         if k in run.start:
             scaninfo[k] = run.start[k]
     if "ref_args" in run.start:
-        scaninfo["ref_edge"] = run.start["ref_args"]["i0up_multimesh_sample_sample_name"]["value"]
-        scaninfo["ref_id"] = run.start["ref_args"]["i0up_multimesh_sample_sample_id"]["value"]
+        scaninfo["ref_edge"] = run.start["ref_args"][
+            "i0up_multimesh_sample_sample_name"
+        ]["value"]
+        scaninfo["ref_id"] = run.start["ref_args"]["i0up_multimesh_sample_sample_id"][
+            "value"
+        ]
     scaninfo["uid"] = run.start["uid"]
     motors = {}
     baseline = run.baseline.data.read()
-    motors["exslit"] = get_with_fallbacks(baseline, "eslit", "Exit Slit of Mono Vertical Gap")[0].item()
-    motors["manipx"] = float(get_with_fallbacks(baseline, "manip_x", "Manipulator_x", default=[0])[0])
-    motors["manipy"] = float(get_with_fallbacks(baseline, "manip_y", "Manipulator_y", default=[0])[0])
-    motors["manipz"] = float(get_with_fallbacks(baseline, "manip_z", "Manipulator_z", default=[0])[0])
-    motors["manipr"] = float(get_with_fallbacks(baseline, "manip_r", "Manipulator_r", default=[0])[0])
-    motors["samplex"] = float(get_with_fallbacks(baseline, "manip_sx", "Manipulator_sx", default=[0])[0])
-    motors["sampley"] = float(get_with_fallbacks(baseline, "manip_sy", "Manipulator_sy", default=[0])[0])
-    motors["samplez"] = float(get_with_fallbacks(baseline, "manip_sz", "Manipulator_sz", default=[0])[0])
-    motors["sampler"] = float(get_with_fallbacks(baseline, "manip_sr", "Manipulator_sr", default=[0])[0])
+    motors["exslit"] = get_with_fallbacks(
+        baseline, "eslit", "Exit Slit of Mono Vertical Gap"
+    )[0].item()
+    motors["manipx"] = float(
+        get_with_fallbacks(baseline, "manip_x", "Manipulator_x", default=[0])[0]
+    )
+    motors["manipy"] = float(
+        get_with_fallbacks(baseline, "manip_y", "Manipulator_y", default=[0])[0]
+    )
+    motors["manipz"] = float(
+        get_with_fallbacks(baseline, "manip_z", "Manipulator_z", default=[0])[0]
+    )
+    motors["manipr"] = float(
+        get_with_fallbacks(baseline, "manip_r", "Manipulator_r", default=[0])[0]
+    )
+    motors["samplex"] = float(
+        get_with_fallbacks(baseline, "manip_sx", "Manipulator_sx", default=[0])[0]
+    )
+    motors["sampley"] = float(
+        get_with_fallbacks(baseline, "manip_sy", "Manipulator_sy", default=[0])[0]
+    )
+    motors["samplez"] = float(
+        get_with_fallbacks(baseline, "manip_sz", "Manipulator_sz", default=[0])[0]
+    )
+    motors["sampler"] = float(
+        get_with_fallbacks(baseline, "manip_sr", "Manipulator_sr", default=[0])[0]
+    )
     motors["tesz"] = float(get_with_fallbacks(baseline, "tesz", default=[0])[0])
     metadata["scaninfo"] = scaninfo
     metadata["motors"] = motors
@@ -130,7 +156,9 @@ def get_run_data(run, omit=[], omit_array_keys=True):
     save_directory = join(get_proposal_path(run), "ucal_processing")
 
     if run_is_processed(run, save_directory):
-        rois, tes_data = get_tes_data(run, save_directory, omit_array_keys=omit_array_keys)
+        rois, tes_data = get_tes_data(
+            run, save_directory, omit_array_keys=omit_array_keys
+        )
     else:
         print(f"No TES Data is Processed for {run.start['scan_id']}")
         rois = get_tes_rois(run, omit_array_keys=omit_array_keys)
@@ -186,7 +214,9 @@ def add_comment_to_lines(multiline_string, comment_char="#"):
     str
         The multiline string with comment characters added to each line.
     """
-    commented_lines = [f"{comment_char} " + line for line in multiline_string.split("\n")]
+    commented_lines = [
+        f"{comment_char} " + line for line in multiline_string.split("\n")
+    ]
     return "\n".join(commented_lines)
 
 
