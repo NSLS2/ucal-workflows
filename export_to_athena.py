@@ -17,7 +17,7 @@ def exportToAthena(
     """Exports to Graham's ASCII SSRL data format
 
     :param folder: Export folder (filename will be auto-generated)
-    :param data: Numpy array with data of dimensions (npts, ncols)
+    :param data: NumPy array with data of dimensions (npts, ncols)
     :param header: Dictionary with 'scaninfo', 'motors', 'channelinfo' sub-dictionaries
     :param namefmt: Python format string that will be filled with info from 'scaninfo' dictionary
     :param c1: Comment string 1

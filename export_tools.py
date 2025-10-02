@@ -177,13 +177,13 @@ def get_run_data(run, omit=[], omit_array_keys=True):
                 try:
                     if len(tes_data[key].shape) == 1 or not omit_array_keys:
                         datadict[key] = tes_data[key]
-                except:
+                except Exception:
                     continue
         else:
             try:
                 if len(data[key].shape) == 1 or not omit_array_keys:
                     datadict[key] = data[key].data
-            except:
+            except Exception:
                 continue
     if "seconds" not in datadict:
         datadict["seconds"] = np.zeros_like(datadict[key]) + exposure

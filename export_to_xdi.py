@@ -15,7 +15,7 @@ def get_config(config, keys, default=None):
         if item is None:
             return default
         return item.read()
-    except:
+    except Exception:
         return default
 
 
@@ -241,7 +241,7 @@ def get_xdi_normalized_data(run, metadata, omit_array_keys=True):
     )
     normalize_detector(
         "nexafs_sc",
-        "tey",
+        "tey",  # codespell:ignore tey
         columns,
         metadata,
         "Total electron yield via drain current from NEXAFS sample bar",
@@ -392,7 +392,7 @@ def generate_format_string(data):
                         len(str(int(max_value))) + 5
                     )  # Add 5 for decimal point, 3 decimals, and sign
                     formats.append(f"%{width}.3f")
-        except:
+        except Exception:
             formats.append("%11.4e")
 
     return " ".join(formats)
