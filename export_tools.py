@@ -1,14 +1,14 @@
 import datetime
 import numpy as np
 from os.path import join
-from tiled.client import from_uri
+from utils import get_tiled_client
 from autoprocess.statelessAnalysis import get_tes_data, get_tes_rois
 from autoprocess.utils import run_is_processed
 import re
 
 
 def initialize_tiled_client(beamline_acronym):
-    return from_uri("https://tiled.nsls2.bnl.gov")[beamline_acronym]["raw"]
+    return get_tiled_client()["raw"]
 
 
 def get_proposal_path(run):
