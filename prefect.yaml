@@ -34,6 +34,7 @@ deployments:
         env:
           TILED_SITE_PROFILES: /nsls2/software/etc/tiled/profiles
         image: ghcr.io/nsls2/ucal-workflow-prefect3:main
+        image_pull_policy: Always
         network: slirp4netns
         volumes:
           - /nsls2/data/sst/proposals:/nsls2/data/sst/proposals
