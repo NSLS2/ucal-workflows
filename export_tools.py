@@ -1,14 +1,16 @@
 import datetime
 import numpy as np
 from os.path import join
-from utils import get_tiled_client
 from autoprocess.statelessAnalysis import get_tes_data, get_tes_rois
 from autoprocess.utils import run_is_processed
+from prefect.blocks.system import Secret
+from tiled.client import from_profile
 import re
 
 
 def initialize_tiled_client(beamline_acronym):
-    return get_tiled_client()["raw"]
+    api_key = Secret.load(f"tiled-{beamline_acronym}-api-key", _sync=True).get()
+    return from_profile("nsls2", api_key=api_key)[beamline_acronym]["raw"]
 
 
 def get_proposal_path(run):
