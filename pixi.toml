@@ -10,6 +10,3 @@ python = "<3.13"
 tiled-client = ">=0.2.1"
 databroker = "*"
 gcc = "*"  # mass in ucal-autoprocess requires this
-
-[pypi-dependencies]
-ucal-autoprocess = { git = "https://github.com/NSLS-II-SST/ucal-autoprocess.git" }
