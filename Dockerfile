@@ -22,6 +22,9 @@ RUN mkdir /repo -m 0777
 
 RUN /bin/bash /shell-hook
 
+RUN pixi run python -m pip install Cython==3.1.3
+RUN pixi run python -m pip install git+https://github.com/JunAishima/mass.git@fix-build
+RUN pixi run python -m pip install git+https://github.com/NSLS-II-SST/ucal-autoprocess.git@pixi-fix
 #now reapply deployment to push the image that is being created
 ENTRYPOINT ["pixi", "run"]
 CMD ["python", "-m", "test", "arg"]
