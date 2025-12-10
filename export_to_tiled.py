@@ -1,4 +1,4 @@
-from export_to_xdi import get_xdi_normalized_data, get_xdi_run_header, make_filename
+from export_to_xdi import get_xdi_normalized_data, get_xdi_run_header
 import xarray as xr
 
 
@@ -28,12 +28,16 @@ def export_to_tiled(run, header_updates={}):
     """
 
     if "primary" not in run:
-        print(f"Tiled Export does not support streams other than Primary, skipping {run.start['scan_id']}")
+        print(
+            f"Tiled Export does not support streams other than Primary, skipping {run.start['scan_id']}"
+        )
         return False
     metadata = get_xdi_run_header(run, header_updates)
     print("Got XDI Metadata")
 
-    columns, run_data, metadata = get_xdi_normalized_data(run, metadata, omit_array_keys=False)
+    columns, run_data, metadata = get_xdi_normalized_data(
+        run, metadata, omit_array_keys=False
+    )
 
     da_dict = {}
     for name, data in zip(columns, run_data):
@@ -41,7 +45,10 @@ def export_to_tiled(run, header_updates={}):
             if len(data) == 3:
                 counts, mono_grid, energy_grid = data
                 rixs = xr.DataArray(
-                    counts.T, coords={"emission": energy_grid[:, 0]}, dims=("time", "emission"), name=name
+                    counts.T,
+                    coords={"emission": energy_grid[:, 0]},
+                    dims=("time", "emission"),
+                    name=name,
                 )
             else:
                 rixs = xr.DataArray(data, dims=("time", "emission"), name=name)

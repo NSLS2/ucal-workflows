@@ -14,14 +14,18 @@ def exportToHDF5(folder, run, header_updates={}):
     """
 
     if "primary" not in run:
-        print(f"HDF5 Export does not support streams other than Primary, skipping {run.start['scan_id']}")
+        print(
+            f"HDF5 Export does not support streams other than Primary, skipping {run.start['scan_id']}"
+        )
         return False
     metadata = get_xdi_run_header(run, header_updates)
     print("Got XDI Metadata")
     filename = make_filename(folder, metadata, "hdf5")
     print(f"Exporting HDF5 to {filename}")
 
-    columns, run_data, metadata = get_xdi_normalized_data(run, metadata, omit_array_keys=False)
+    columns, run_data, metadata = get_xdi_normalized_data(
+        run, metadata, omit_array_keys=False
+    )
 
     with h5py.File(filename, "w") as f:
         for name, data in zip(columns, run_data):

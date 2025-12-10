@@ -1,6 +1,11 @@
 import numpy as np
-from os.path import exists, join
-from export_tools import get_with_fallbacks, get_run_data, add_comment_to_lines, sanitize_filename
+from os.path import join
+from export_tools import (
+    get_with_fallbacks,
+    get_run_data,
+    add_comment_to_lines,
+    sanitize_filename,
+)
 from datetime import datetime
 
 
@@ -10,7 +15,7 @@ def get_config(config, keys, default=None):
         if item is None:
             return default
         return item.read()
-    except:
+    except Exception:
         return default
 
 
@@ -44,7 +49,9 @@ def get_xdi_run_header(run, header_updates={}):
     metadata["Beamline.name"] = "7-ID-1"
     metadata["Beamline.chamber"] = "NEXAFS"
 
-    metadata["Mono.stripe"] = str(get_config(run.baseline.config, ["en", "en_monoen_gratingx_setpoint"], [""])[0])
+    metadata["Mono.stripe"] = str(
+        get_config(run.baseline.config, ["en", "en_monoen_gratingx_setpoint"], [""])[0]
+    )
 
     metadata["Sample.name"] = run.start.get("sample_name", "")
     metadata["Sample.id"] = run.start.get("sample_id", "")
@@ -68,19 +75,43 @@ def get_xdi_run_header(run, header_updates={}):
         metadata["Element.edge"] = ""  # Because it was really the element symbol
         if element.lower() in ["c", "n", "o", "f", "na", "mg", "al", "si"]:
             metadata["Element.edge"] = "K"
-        elif element.lower() in ["ca", "sc", "ti", "v", "cr", "mn", "fe", "co", "ni", "cu", "zn"]:
+        elif element.lower() in [
+            "ca",
+            "sc",
+            "ti",
+            "v",
+            "cr",
+            "mn",
+            "fe",
+            "co",
+            "ni",
+            "cu",
+            "zn",
+        ]:
             metadata["Element.edge"] = "L"
         elif element.lower() in ["ce"]:
             metadata["Element.edge"] = "M"
 
     metadata["Motors.exslit"] = float(
-        get_with_fallbacks(baseline, "eslit", "Exit Slit of Mono Vertical Gap", default=[0])[0]
+        get_with_fallbacks(
+            baseline, "eslit", "Exit Slit of Mono Vertical Gap", default=[0]
+        )[0]
     )
-    metadata["Motors.manipx"] = float(get_with_fallbacks(baseline, "manip_x", "Manipulator_x", default=[0])[0])
-    metadata["Motors.manipy"] = float(get_with_fallbacks(baseline, "manip_y", "Manipulator_y", default=[0])[0])
-    metadata["Motors.manipz"] = float(get_with_fallbacks(baseline, "manip_z", "Manipulator_z", default=[0])[0])
-    metadata["Motors.manipr"] = float(get_with_fallbacks(baseline, "manip_r", "Manipulator_r", default=[0])[0])
-    metadata["Motors.tesz"] = float(get_with_fallbacks(baseline, "tesz", default=[0])[0])
+    metadata["Motors.manipx"] = float(
+        get_with_fallbacks(baseline, "manip_x", "Manipulator_x", default=[0])[0]
+    )
+    metadata["Motors.manipy"] = float(
+        get_with_fallbacks(baseline, "manip_y", "Manipulator_y", default=[0])[0]
+    )
+    metadata["Motors.manipz"] = float(
+        get_with_fallbacks(baseline, "manip_z", "Manipulator_z", default=[0])[0]
+    )
+    metadata["Motors.manipr"] = float(
+        get_with_fallbacks(baseline, "manip_r", "Manipulator_r", default=[0])[0]
+    )
+    metadata["Motors.tesz"] = float(
+        get_with_fallbacks(baseline, "tesz", default=[0])[0]
+    )
     metadata.update(header_updates)
     return metadata
 
@@ -167,7 +198,9 @@ def get_xdi_normalized_data(run, metadata, omit_array_keys=True):
         The modified metadata.
     """
     columns, run_data, tes_rois = get_run_data(
-        run, omit=["tes_scan_point_start", "tes_scan_point_end"], omit_array_keys=omit_array_keys
+        run,
+        omit=["tes_scan_point_start", "tes_scan_point_end"],
+        omit_array_keys=omit_array_keys,
     )
     print("Got XDI Data")
 
@@ -199,11 +232,27 @@ def get_xdi_normalized_data(run, metadata, omit_array_keys=True):
         metadata,
         "Beam intensity normalization via drain current from NEXAFS upstream Au mesh",
     )
-    normalize_detector("nexafs_i1", "itrans", columns, metadata, "Transmission intensity via downstream diode")
     normalize_detector(
-        "nexafs_sc", "tey", columns, metadata, "Total electron yield via drain current from NEXAFS sample bar"
+        "nexafs_i1",
+        "itrans",
+        columns,
+        metadata,
+        "Transmission intensity via downstream diode",
     )
-    normalize_detector("nexafs_pey", "pey", columns, metadata, "Partial electron yield via NEXAFS Channeltron")
+    normalize_detector(
+        "nexafs_sc",
+        "tey",  # codespell:ignore tey
+        columns,
+        metadata,
+        "Total electron yield via drain current from NEXAFS sample bar",
+    )
+    normalize_detector(
+        "nexafs_pey",
+        "pey",
+        columns,
+        metadata,
+        "Partial electron yield via NEXAFS Channeltron",
+    )
     normalize_detector(
         "nexafs_ref",
         "iref",
@@ -212,26 +261,48 @@ def get_xdi_normalized_data(run, metadata, omit_array_keys=True):
         "Energy reference via drain current from upstream multimesh reference samples",
     )
     normalize_detector(
-        "tes_mca_counts", "tfy", columns, metadata, "Total fluorescence yield via counts from TES detector"
+        "tes_mca_counts",
+        "tfy",
+        columns,
+        metadata,
+        "Total fluorescence yield via counts from TES detector",
     )
 
     normalize_detector(
-        "tes_mca_pfy", "pfy", columns, metadata, "Partial fluorescence yield via counts from TES detector"
+        "tes_mca_pfy",
+        "pfy",
+        columns,
+        metadata,
+        "Partial fluorescence yield via counts from TES detector",
     )
-    normalize_detector("tes_mca_spectrum", "rixs", columns, metadata, "RIXS spectrum via TES detector")
     normalize_detector(
-        "m4cd", "i0_m4cd", columns, metadata, "Drain current from M4 mirror, sometimes useful as a secondary i0"
+        "tes_mca_spectrum", "rixs", columns, metadata, "RIXS spectrum via TES detector"
+    )
+    normalize_detector(
+        "m4cd",
+        "i0_m4cd",
+        columns,
+        metadata,
+        "Drain current from M4 mirror, sometimes useful as a secondary i0",
     )
     normalize_detector("en_energy_setpoint", "energy", columns)
     normalize_detector("seconds", "measurement_time", columns)
     if metadata.get("Scan.motors", "") == "en_energy":
         metadata["Scan.motors"] = "energy"
     if "energy" in columns:
-        normalize_detector("en_energy", "energy_readback", columns, metadata, "Monochromator energy encoder readback")
+        normalize_detector(
+            "en_energy",
+            "energy_readback",
+            columns,
+            metadata,
+            "Monochromator energy encoder readback",
+        )
     else:
         normalize_detector("en_energy", "energy", columns)
     exclude_column("ucal_sc", columns, run_data)
-    columns, run_data = reorder_columns(columns, run_data, metadata.get("Scan.motors", "time"), 0)
+    columns, run_data = reorder_columns(
+        columns, run_data, metadata.get("Scan.motors", "time"), 0
+    )
     return columns, run_data, metadata
 
 
@@ -259,7 +330,9 @@ def exportToXDI(
     None
     """
     if "primary" not in run:
-        print(f"XDI Export does not support streams other than Primary, skipping {run.start['scan_id']}")
+        print(
+            f"XDI Export does not support streams other than Primary, skipping {run.start['scan_id']}"
+        )
         return False
     metadata = get_xdi_run_header(run, headerUpdates)
     print("Got XDI Metadata")
@@ -315,9 +388,11 @@ def generate_format_string(data):
                 if np.abs(avg_value) < 1:
                     formats.append("%11.4e")
                 else:
-                    width = len(str(int(max_value))) + 5  # Add 5 for decimal point, 3 decimals, and sign
+                    width = (
+                        len(str(int(max_value))) + 5
+                    )  # Add 5 for decimal point, 3 decimals, and sign
                     formats.append(f"%{width}.3f")
-        except:
+        except Exception:
             formats.append("%11.4e")
 
     return " ".join(formats)

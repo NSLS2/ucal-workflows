@@ -1,5 +1,5 @@
 import numpy as np
-from os.path import exists, join
+from os.path import join
 from export_tools import add_comment_to_lines, get_header_and_data
 from prefect import get_run_logger
 
@@ -12,12 +12,12 @@ def exportToAthena(
     c2="",
     headerUpdates={},
     strict=False,
-    verbose=True
+    verbose=True,
 ):
     """Exports to Graham's ASCII SSRL data format
 
     :param folder: Export folder (filename will be auto-generated)
-    :param data: Numpy array with data of dimensions (npts, ncols)
+    :param data: NumPy array with data of dimensions (npts, ncols)
     :param header: Dictionary with 'scaninfo', 'motors', 'channelinfo' sub-dictionaries
     :param namefmt: Python format string that will be filled with info from 'scaninfo' dictionary
     :param c1: Comment string 1
@@ -59,7 +59,7 @@ def exportToAthena(
     metadata["c1"] = c1
     metadata["c2"] = c2
 
-    headerstring = """NSLS                                  
+    headerstring = """NSLS
 {date}
 PTS:{npts:11d} COLS: {ncols:11d}
 Sample: {sample}   loadid: {loadid}
@@ -71,9 +71,7 @@ Scan: {scan}
 {c1}
 {c2}
 -------------------------------------------------------------------------------
-{cols}""".format(
-        **metadata, **motors
-    )
+{cols}""".format(**metadata, **motors)
     headerstring = add_comment_to_lines(headerstring, "#")
     logger.info(f"Writing Athena to {filename}")
     with open(filename, "w") as f:

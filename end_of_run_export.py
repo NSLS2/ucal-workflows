@@ -10,7 +10,9 @@ import datetime
 def get_export_path(run):
     proposal_path = get_proposal_path(run)
 
-    visit_date = datetime.datetime.fromisoformat(run.start.get("start_datetime", datetime.datetime.today().isoformat()))
+    visit_date = datetime.datetime.fromisoformat(
+        run.start.get("start_datetime", datetime.datetime.today().isoformat())
+    )
     visit_dir = visit_date.strftime("%Y%m%d_export")
 
     export_path = join(proposal_path, visit_dir)
