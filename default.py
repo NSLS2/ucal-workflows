@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tiled
 
+
 def print_argument(argument_to_print=""):
     if argument_to_print:
         print(f"argument to print: {argument_to_print}")  # noqa: T201
