@@ -7,8 +7,8 @@ platforms = ["linux-64"]
 prefect = "3.*"
 prefect-docker = "*"
 python = "<3.14"
-tiled-client = ">=0.2.1"
-databroker = "*"
+tiled-client = ">=0.2.3"
+bluesky-tiled-plugins = ">=2"
 gcc = "*"  # mass in ucal-autoprocess requires this
 
 [pypi-dependencies]
