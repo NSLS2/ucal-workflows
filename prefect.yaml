@@ -4,7 +4,7 @@
 
 # Generic metadata about this project
 name: ucal-workflows
-prefect-version: 3.6.0
+prefect-version: 3.6.10
 
 # build section allows you to manage and build docker images
 build: null
@@ -23,7 +23,7 @@ pull:
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
   - name: ucal-end-of-run-workflow-docker
-    version: 0.1.2
+    version: 0.1.3
     tags:
       - ucal
       - sst
